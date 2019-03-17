@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Pornhub Logo Creator</title>
+</head>
+
+<body>
+  <div id="logo-container">
+    <div contenteditable="true" id="porn" class="logo">Type</div>
+    <div contenteditable="true" id="hub" class="logo">Here</div>
+  </div>
+  <button id="save" onclick="draw()">download</button>
+  <canvas width="500" height="115"></canvas>
+
+  <style>
+    body {
+      text-align: center;
+      background-color: rgb(0, 0, 0);
+    }
+
+    #logo-container {
+      margin-top: 15%;
+    }
+
+    #save {
+      margin-top: 20px;
+      background-color: orange;
+      color: black;
+      font-family: Arial;
+      font-weight: bold;
+      font-size: 50px;
+      border-radius: 10px;
+      border: none;
+    }
+
+    #porn {
+      color: white;
+    }
+
+    #hub {
+      background-color: orange;
+      padding: 0px 10px;
+      border-radius: 10px;
+    }
+
+    .logo {
+      font-family: Arial;
+      font-weight: bold;
+      font-size: 100px;
+      display: inline-block;
+      min-width: 25px;
+      outline: none;
+    }
+
+    canvas {
+      display: none;
+    }
+  </style>
+
+  <script>
+    // When the "Porn" div is empty give it a border
+    document.getElementById("porn").addEventListener("input", () => {
+      let porn = document.getElementById("porn");
+      if (porn.innerHTML == "")
+        porn.setAttribute("style", "border: 3px dashed red;");
+      else porn.setAttribute("style", "");
+    });
+
+    var mp = (multiplier = 10); // Number to mulitply all variables used in creating the image with for a higher res
+    var iM = (imageMargin = 30);
+
+    function draw(
+      porn = document.getElementById("porn").innerHTML,
+      hub = document.getElementById("hub").innerHTML
+    ) {
+      const canvas = document.getElementsByTagName("canvas")[0];
+      const pornDiv = document.getElementById("porn");
+      const hubDiv = document.getElementById("hub");
+
+      canvas.width =
+        (iM * 2 + pornDiv.offsetWidth + hubDiv.offsetWidth) * mp;
+      canvas.height = (iM * 2 + pornDiv.offsetHeight) * mp;
+
+      const { width, height } = canvas;
+      const ctx = canvas.getContext("2d");
+      ctx.font = `bold ${100 * mp}px Arial`;
+      const pornWidth = ctx.measureText(porn).width;
+      const hubWidth = ctx.measureText(hub).width;
+
+      //Black background
+      ctx.fillStyle = "black";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      //Draw "porn"
+      ctx.fillStyle = "white";
+      ctx.fillText(porn, iM * mp, iM * mp + 92 * mp); //92 is the magic number
+
+      //draw orange
+      let borderRadius = 20;
+      ctx.strokeStyle = "orange";
+      ctx.fillStyle = "orange";
+      ctx.lineJoin = "round";
+      ctx.lineWidth = borderRadius * mp;
+      ctx.strokeRect(
+        iM * mp + pornWidth + (borderRadius / 2) * mp + 5 * mp,
+        iM * mp + (borderRadius / 2) * mp,
+        hubWidth,
+        -iM * 2 * mp + height - borderRadius * mp
+      );
+      ctx.fillRect(
+        iM * mp + pornWidth + borderRadius * mp + 5 * mp - 1 * mp,
+        iM * mp + borderRadius * mp,
+        hubWidth + 2 * mp - borderRadius * mp,
+        -iM * 2 * mp + height - borderRadius * 2 * mp
+      );
+      //The -1 (x) and +2 (width) are to make the inner-square a bit bigger to avoid creating a visible edge between the stroke outline and the inner-square
+
+      //draw "hub"
+      ctx.fillStyle = "black";
+      ctx.fillText(
+        hub,
+        iM * mp + pornWidth + 10 * mp,
+        iM * mp + 92 * mp
+      ); //92 is the magic number
+
+      save();
+    }
+
+    function save() {
+      porn = document.getElementById("porn").innerHTML;
+      hub = document.getElementById("hub").innerHTML;
+
+      let link = document.createElement("a");
+      let canvas = document.getElementsByTagName("canvas")[0];
+      link.setAttribute("download", porn + hub + ".png");
+      link.setAttribute("href", canvas.toDataURL("image/png;base64"));
+      if (document.createEvent) {
+        e = document.createEvent("MouseEvents");
+        e.initMouseEvent(
+          "click",
+          true,
+          true,
+          window,
+          0,
+          0,
+          0,
+          0,
+          0,
+          false,
+          false,
+          false,
+          false,
+          0,
+          null
+        );
+
+        link.dispatchEvent(e);
+      } else if (link.fireEvent) {
+        link.fireEvent("onclick");
+      }
+    }
+  </script>
+
+  <!-- By Rein Fernhout (reinfernhout.xyz). Fixed by ZJUGuoShuai. -->
+</body>
+
+</html>
