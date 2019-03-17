@@ -4,6 +4,6 @@
 
 > *Do One Thing and Do It Well*
 
-Try it online:
+Try it online: https://zjuguoshuai.github.io/PH-Logo-Creator/
 
 *Originating from Rein Fernhout, fixed by me.*
